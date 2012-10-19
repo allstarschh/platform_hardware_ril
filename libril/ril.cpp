@@ -2709,8 +2709,11 @@ RIL_register (const RIL_RadioFunctions *callbacks) {
 #else
     s_fdListen = android_get_control_socket(SOCKET_NAME_RIL);
     if (s_fdListen < 0) {
-        ALOGE("Failed to get socket '" SOCKET_NAME_RIL "'");
-        exit(-1);
+        s_fdListen = android_get_control_socket("rild1");
+        if (s_fdListen < 0) {
+            ALOGE("Failed to get socket '" SOCKET_NAME_RIL "'");
+            exit(-1);
+        }
     }
 
     ret = listen(s_fdListen, 4);
@@ -2734,8 +2737,11 @@ RIL_register (const RIL_RadioFunctions *callbacks) {
 
     s_fdDebug = android_get_control_socket(SOCKET_NAME_RIL_DEBUG);
     if (s_fdDebug < 0) {
-        ALOGE("Failed to get socket '" SOCKET_NAME_RIL_DEBUG "' errno:%d", errno);
-        exit(-1);
+        s_fdDebug = android_get_control_socket("rild-debug1");
+        if (s_fdDebug < 0) {
+            ALOGE("Failed to get socket '" SOCKET_NAME_RIL_DEBUG "' errno:%d", errno);
+            exit(-1);
+        }
     }
 
     ret = listen(s_fdDebug, 4);

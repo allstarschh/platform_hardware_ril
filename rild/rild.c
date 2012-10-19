@@ -106,6 +106,7 @@ int main(int argc, char **argv)
     const RIL_RadioFunctions *funcs;
     char libPath[PROPERTY_VALUE_MAX];
     unsigned char hasLibArgs = 0;
+    static char client[3] = {'0'};
 
     int i;
 
@@ -113,6 +114,9 @@ int main(int argc, char **argv)
     for (i = 1; i < argc ;) {
         if (0 == strcmp(argv[i], "-l") && (argc - i > 1)) {
             rilLibPath = argv[i + 1];
+            i += 2;
+        } else if (0 == strcmp(argv[i], "-c") && (argc - i > 1)) {
+            strncpy(client, argv[i+1], strlen(client));
             i += 2;
         } else if (0 == strcmp(argv[i], "--")) {
             i++;
@@ -122,6 +126,7 @@ int main(int argc, char **argv)
             usage(argv[0]);
         }
     }
+    ALOGD("client = %s", client); 
 
     if (rilLibPath == NULL) {
         if ( 0 == property_get(LIB_PATH_PROPERTY, libPath, NULL)) {
